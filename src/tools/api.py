@@ -22,6 +22,16 @@ from src.data.models import (
 # Global cache instance
 _cache = get_cache()
 
+# ---------------------------------------------------------------------------
+# Optional provider-based backend (activated by FINANCIAL_DATA_PROVIDER env var)
+# ---------------------------------------------------------------------------
+_provider = None
+_provider_name = os.environ.get("FINANCIAL_DATA_PROVIDER", "").lower()
+if _provider_name == "yfinance":
+    from src.tools.providers.yfinance_provider import YFinanceProvider
+
+    _provider = YFinanceProvider()
+
 
 def _make_api_request(url: str, headers: dict, method: str = "GET", json_data: dict = None, max_retries: int = 3) -> requests.Response:
     """
@@ -61,10 +71,17 @@ def get_prices(ticker: str, start_date: str, end_date: str, api_key: str = None)
     """Fetch price data from cache or API."""
     # Create a cache key that includes all parameters to ensure exact matches
     cache_key = f"{ticker}_{start_date}_{end_date}"
-    
+
     # Check cache first - simple exact match
     if cached_data := _cache.get_prices(cache_key):
         return [Price(**price) for price in cached_data]
+
+    # Delegate to the configured provider when available
+    if _provider is not None:
+        prices = _provider.get_prices(ticker, start_date, end_date)
+        if prices:
+            _cache.set_prices(cache_key, [p.model_dump() for p in prices])
+        return prices
 
     # If not in cache, fetch from API
     headers = {}
@@ -102,10 +119,17 @@ def get_financial_metrics(
     """Fetch financial metrics from cache or API."""
     # Create a cache key that includes all parameters to ensure exact matches
     cache_key = f"{ticker}_{period}_{end_date}_{limit}"
-    
+
     # Check cache first - simple exact match
     if cached_data := _cache.get_financial_metrics(cache_key):
         return [FinancialMetrics(**metric) for metric in cached_data]
+
+    # Delegate to the configured provider when available
+    if _provider is not None:
+        financial_metrics = _provider.get_financial_metrics(ticker, end_date, period, limit)
+        if financial_metrics:
+            _cache.set_financial_metrics(cache_key, [m.model_dump() for m in financial_metrics])
+        return financial_metrics
 
     # If not in cache, fetch from API
     headers = {}
@@ -142,6 +166,10 @@ def search_line_items(
     api_key: str = None,
 ) -> list[LineItem]:
     """Fetch line items from API."""
+    # Delegate to the configured provider when available
+    if _provider is not None:
+        return _provider.search_line_items(ticker, line_items, end_date, period, limit)
+
     # If not in cache or insufficient data, fetch from API
     headers = {}
     financial_api_key = api_key or os.environ.get("FINANCIAL_DATASETS_API_KEY")
@@ -160,7 +188,7 @@ def search_line_items(
     response = _make_api_request(url, headers, method="POST", json_data=body)
     if response.status_code != 200:
         return []
-    
+
     try:
         data = response.json()
         response_model = LineItemResponse(**data)
@@ -184,10 +212,17 @@ def get_insider_trades(
     """Fetch insider trades from cache or API."""
     # Create a cache key that includes all parameters to ensure exact matches
     cache_key = f"{ticker}_{start_date or 'none'}_{end_date}_{limit}"
-    
+
     # Check cache first - simple exact match
     if cached_data := _cache.get_insider_trades(cache_key):
         return [InsiderTrade(**trade) for trade in cached_data]
+
+    # Delegate to the configured provider when available
+    if _provider is not None:
+        trades = _provider.get_insider_trades(ticker, end_date, start_date, limit)
+        if trades:
+            _cache.set_insider_trades(cache_key, [t.model_dump() for t in trades])
+        return trades
 
     # If not in cache, fetch from API
     headers = {}
@@ -249,10 +284,17 @@ def get_company_news(
     """Fetch company news from cache or API."""
     # Create a cache key that includes all parameters to ensure exact matches
     cache_key = f"{ticker}_{start_date or 'none'}_{end_date}_{limit}"
-    
+
     # Check cache first - simple exact match
     if cached_data := _cache.get_company_news(cache_key):
         return [CompanyNews(**news) for news in cached_data]
+
+    # Delegate to the configured provider when available
+    if _provider is not None:
+        news_items = _provider.get_company_news(ticker, end_date, start_date, limit)
+        if news_items:
+            _cache.set_company_news(cache_key, [n.model_dump() for n in news_items])
+        return news_items
 
     # If not in cache, fetch from API
     headers = {}
@@ -310,6 +352,10 @@ def get_market_cap(
     api_key: str = None,
 ) -> float | None:
     """Fetch market cap from the API."""
+    # Delegate to the configured provider when available
+    if _provider is not None:
+        return _provider.get_market_cap(ticker, end_date)
+
     # Check if end_date is today
     if end_date == datetime.datetime.now().strftime("%Y-%m-%d"):
         # Get the market cap from company facts API
