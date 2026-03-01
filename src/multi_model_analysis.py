@@ -396,7 +396,11 @@ def main() -> None:
     payload = _save_json(out_dir, tickers, results, model_labels, selected_analysts, start_date, end_date)
     _save_text_report(out_dir)
     _save_html_report(out_dir, payload)
+
+    html_path = out_dir.resolve() / "report.html"
+    file_url  = html_path.as_uri()
     console.print(f"\n[bold]Output saved to:[/bold] [underline]{out_dir}[/underline]")
+    console.print(f"[bold]Report:[/bold]  [bold cyan underline]{file_url}[/bold cyan underline]")
 
 
 # ---------------------------------------------------------------------------
