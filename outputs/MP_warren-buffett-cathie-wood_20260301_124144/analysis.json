@@ -1,0 +1,127 @@
+{
+  "meta": {
+    "run_at": "2026-03-01T12:41:44",
+    "tickers": [
+      "MP"
+    ],
+    "start_date": "2025-12-01",
+    "end_date": "2026-03-01",
+    "models": [
+      {
+        "label": "Grok 4",
+        "model_name": "grok-4-0709",
+        "provider": "xAI"
+      },
+      {
+        "label": "GPT-5.2",
+        "model_name": "gpt-5.2",
+        "provider": "OpenAI"
+      },
+      {
+        "label": "Gemini 3 Pro",
+        "model_name": "gemini-3-pro-preview",
+        "provider": "Google"
+      }
+    ],
+    "analysts": [
+      {
+        "key": "warren_buffett",
+        "display_name": "Warren Buffett"
+      },
+      {
+        "key": "cathie_wood",
+        "display_name": "Cathie Wood"
+      }
+    ]
+  },
+  "tickers": {
+    "MP": {
+      "consensus": {
+        "action": "HOLD",
+        "vote_count": 3,
+        "total_models": 3,
+        "model_votes": {
+          "Grok 4": "HOLD",
+          "GPT-5.2": "HOLD",
+          "Gemini 3 Pro": "HOLD"
+        }
+      },
+      "portfolio_decisions": {
+        "Grok 4": {
+          "action": "hold",
+          "quantity": 0,
+          "confidence": 100,
+          "reasoning": "No valid trade available"
+        },
+        "GPT-5.2": {
+          "action": "hold",
+          "quantity": 0,
+          "confidence": 100,
+          "reasoning": "No valid trade available"
+        },
+        "Gemini 3 Pro": {
+          "action": "hold",
+          "quantity": 0,
+          "confidence": 100,
+          "reasoning": "No valid trade available"
+        }
+      },
+      "risk_limits": {
+        "Grok 4": {
+          "max_long": null,
+          "max_short": null
+        },
+        "GPT-5.2": {
+          "max_long": null,
+          "max_short": null
+        },
+        "Gemini 3 Pro": {
+          "max_long": null,
+          "max_short": null
+        }
+      },
+      "analyst_signals": {
+        "cathie_wood_agent": {
+          "display_name": "Cathie Wood",
+          "models": {
+            "Grok 4": {
+              "signal": "bearish",
+              "confidence": 85.0,
+              "reasoning": "As an investor focused on disruptive innovation, I always seek companies that are pioneering breakthrough technologies with exponential growth potential in massive addressable markets. However, in the case of MP, the available data is woefully insufficient to identify any specific disruptive technologies or innovations that could transform industries or create new markets. Without evidence of revenue acceleration, expanding TAM, or a robust innovation pipeline, there's no indication of the multi-year growth trajectory we prize in our conviction-driven approach. R&D investments and management's vision remain opaque, leaving no basis for optimism about scaling in future-facing sectors like technology or healthcare. This lack of data-driven insights signals limited transformative potential over a 5+ year horizon, and the current valuation can't be assessed for growth bias—ultimately, MP doesn't exhibit the high-volatility, high-reward profile we pursue, making it a bearish opportunity until more compelling evidence emerges."
+            },
+            "GPT-5.2": {
+              "signal": "bearish",
+              "confidence": 72.0,
+              "reasoning": "From an innovation-led, exponential-growth investing perspective, we simply don’t have the evidence required to underwrite MP as a disruptive platform company today. The provided analysis scores MP at 0/15 with insufficient data across the three pillars we care about most: (1) disruptive technology differentiation, (2) innovation-driven growth signals (adoption curves, revenue acceleration, operating leverage), and (3) growth-biased valuation support. In our framework, the absence of measurable indicators—clear technological moat, expanding TAM capture, and an R&D/innovation engine that can compound over a 5+ year horizon—tilts the risk/reward decisively to the downside. Until we can validate specific breakthrough capabilities, credible multi-year scaling dynamics, and a valuation that reflects (or underestimates) a true exponential trajectory, we would stay bearish and avoid sizing risk into a name that cannot be justified by data."
+            },
+            "Gemini 3 Pro": {
+              "signal": "bearish",
+              "confidence": 15.0,
+              "reasoning": "At ARK, our high-conviction strategy is strictly data-driven, relying on the identification of exponential growth curves and Wright's Law dynamics. The current analysis for MP presents a complete lack of visibility into these critical factors, returning 'insufficient data' across disruptive potential, innovation, and valuation metrics. We cannot allocate capital to a thesis we cannot verify; we need to see concrete evidence of R&D investment driving a technological moat and proof of scalability within the global supply chain. Without quantifiable metrics showing revenue acceleration or a clear path to dominating the massive TAM for critical materials, we are unable to project the multi-year compound growth we require. Consequently, we are bearish due to the total absence of a validated innovation thesis."
+            }
+          }
+        },
+        "warren_buffett_agent": {
+          "display_name": "Warren Buffett",
+          "models": {
+            "Grok 4": {
+              "signal": "neutral",
+              "confidence": 40,
+              "reasoning": "Insufficient data for all key metrics; unable to assess business quality or value."
+            },
+            "GPT-5.2": {
+              "signal": "neutral",
+              "confidence": 35,
+              "reasoning": "Insufficient data on fundamentals, moat, management, or margin of safety."
+            },
+            "Gemini 3 Pro": {
+              "signal": "neutral",
+              "confidence": 50,
+              "reasoning": "Complete lack of fundamental, moat, and valuation data makes evaluation impossible. I pass on what I can't measure."
+            }
+          }
+        }
+      }
+    }
+  }
+}
