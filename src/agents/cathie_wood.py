@@ -11,7 +11,7 @@ from src.utils.api_key import get_api_key_from_state
 
 
 class CathieWoodSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: float
     reasoning: str
 
@@ -387,7 +387,7 @@ def generate_cathie_wood_output(
             - Evaluate strong potential for multi-year revenue growth.
             - Check if the company can scale effectively in a large market.
             - Use a growth-biased valuation approach.
-            - Provide a data-driven recommendation (bullish, bearish, or neutral).
+            - Provide a data-driven recommendation (bullish, bearish, neutral, or error if data is insufficient).
             
             When providing your reasoning, be thorough and specific by:
             1. Identifying the specific disruptive technologies/innovations the company is leveraging
@@ -410,7 +410,7 @@ def generate_cathie_wood_output(
 
             Return the trading signal in this JSON format:
             {{
-              "signal": "bullish/bearish/neutral",
+              "signal": "bullish/bearish/neutral/error",
               "confidence": float (0-100),
               "reasoning": "string"
             }}
@@ -422,7 +422,7 @@ def generate_cathie_wood_output(
     prompt = template.invoke({"analysis_data": json.dumps(analysis_data, indent=2), "ticker": ticker})
 
     def create_default_cathie_wood_signal():
-        return CathieWoodSignal(signal="neutral", confidence=0.0, reasoning="Error in analysis, defaulting to neutral")
+        return CathieWoodSignal(signal="error", confidence=0.0, reasoning="Error in analysis, defaulting to neutral")
 
     return call_llm(
         prompt=prompt,

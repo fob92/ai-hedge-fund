@@ -10,7 +10,7 @@ from src.utils.llm import call_llm
 from src.utils.api_key import get_api_key_from_state
 
 class CharlieMungerSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: int
     reasoning: str
 
@@ -832,10 +832,11 @@ def generate_munger_output(
          "Confidence: {confidence}\n"
          "Return exactly:\n"
          "{{\n"  # escaped {
-         '  "signal": "bullish" | "bearish" | "neutral",\n'
+         '  "signal": "bullish" | "bearish" | "neutral" | "error",\n'
          f'  "confidence": {confidence_hint},\n'
          '  "reasoning": "short justification"\n'
-         "}}")  # escaped }
+         "}}\n"
+         'Use "error" if data is insufficient to make a judgment.')  # escaped }
     ])
 
     prompt = template.invoke({
@@ -845,7 +846,7 @@ def generate_munger_output(
     })
 
     def _default():
-        return CharlieMungerSignal(signal="neutral", confidence=confidence_hint, reasoning="Insufficient data")
+        return CharlieMungerSignal(signal="error", confidence=confidence_hint, reasoning="Insufficient data")
 
     return call_llm(
         prompt=prompt,

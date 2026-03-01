@@ -24,7 +24,7 @@ from src.utils.api_key import get_api_key_from_state
 class MichaelBurrySignal(BaseModel):
     """Schema returned by the LLM."""
 
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: float  # 0–100
     reasoning: str
 
@@ -352,7 +352,7 @@ def _generate_burry_output(
 
                 Return the trading signal in the following JSON format exactly:
                 {{
-                  "signal": "bullish" | "bearish" | "neutral",
+                  "signal": "bullish" | "bearish" | "neutral" | "error",
                   "confidence": float between 0 and 100,
                   "reasoning": "string"
                 }}
@@ -365,7 +365,7 @@ def _generate_burry_output(
 
     # Default fallback signal in case parsing fails
     def create_default_michael_burry_signal():
-        return MichaelBurrySignal(signal="neutral", confidence=0.0, reasoning="Parsing error – defaulting to neutral")
+        return MichaelBurrySignal(signal="error", confidence=0.0, reasoning="Parsing error – defaulting to neutral")
 
     return call_llm(
         prompt=prompt,

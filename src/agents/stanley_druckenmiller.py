@@ -18,7 +18,7 @@ import statistics
 from src.utils.api_key import get_api_key_from_state
 
 class StanleyDruckenmillerSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: float
     reasoning: str
 
@@ -575,10 +575,11 @@ def generate_druckenmiller_output(
 
               Return the trading signal in this JSON format:
               {{
-                "signal": "bullish/bearish/neutral",
+                "signal": "bullish/bearish/neutral/error",
                 "confidence": float (0-100),
                 "reasoning": "string"
               }}
+              Use "error" if data is insufficient to make a judgment.
               """,
             ),
         ]
@@ -588,7 +589,7 @@ def generate_druckenmiller_output(
 
     def create_default_signal():
         return StanleyDruckenmillerSignal(
-            signal="neutral",
+            signal="error",
             confidence=0.0,
             reasoning="Error in analysis, defaulting to neutral"
         )

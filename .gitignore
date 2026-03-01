@@ -53,7 +53,7 @@ Thumbs.db
 node_modules
 
 # Outputs
-outputs/
+# outputs/
 
 # Database files (users will have their own local databases)
 *.db

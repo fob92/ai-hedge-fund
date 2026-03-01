@@ -11,7 +11,7 @@ from src.utils.api_key import get_api_key_from_state
 
 
 class WarrenBuffettSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: int = Field(description="Confidence 0-100")
     reasoning: str = Field(description="Reasoning for the decision")
 
@@ -204,7 +204,7 @@ def analyze_fundamentals(metrics: list) -> dict[str, any]:
 
 def analyze_consistency(financial_line_items: list) -> dict[str, any]:
     """Analyze earnings consistency and growth."""
-    if len(financial_line_items) < 4:  # Need at least 4 periods for trend analysis
+    if len(financial_line_items) < 2:  # Need at least 2 periods for trend analysis (yfinance returns ~2 TTM windows)
         return {"score": 0, "details": "Insufficient historical data"}
 
     score = 0
@@ -212,7 +212,7 @@ def analyze_consistency(financial_line_items: list) -> dict[str, any]:
 
     # Check earnings growth trend
     earnings_values = [item.net_income for item in financial_line_items if item.net_income]
-    if len(earnings_values) >= 4:
+    if len(earnings_values) >= 2:
         # Simple check: is each period's earnings bigger than the next?
         earnings_growth = all(earnings_values[i] > earnings_values[i + 1] for i in range(len(earnings_values) - 1))
 
@@ -245,7 +245,7 @@ def analyze_moat(metrics: list) -> dict[str, any]:
     4. Brand strength (inferred from margins and consistency)
     5. Switching costs (inferred from customer retention)
     """
-    if not metrics or len(metrics) < 5:  # Need more data for proper moat analysis
+    if not metrics or len(metrics) < 2:  # Need at least 2 TTM periods (yfinance returns ~2 from 5 quarters of history)
         return {"score": 0, "max_score": 5, "details": "Insufficient data for comprehensive moat analysis"}
 
     reasoning = []
@@ -257,7 +257,7 @@ def analyze_moat(metrics: list) -> dict[str, any]:
     historical_roics = [m.return_on_invested_capital for m in metrics if
                         hasattr(m, 'return_on_invested_capital') and m.return_on_invested_capital is not None]
 
-    if len(historical_roes) >= 5:
+    if len(historical_roes) >= 2:
         # Check for consistently high ROE (>15% for most periods)
         high_roe_periods = sum(1 for roe in historical_roes if roe > 0.15)
         roe_consistency = high_roe_periods / len(historical_roes)
@@ -277,14 +277,16 @@ def analyze_moat(metrics: list) -> dict[str, any]:
 
     # 2. Operating Margin Stability (Pricing Power Indicator)
     historical_margins = [m.operating_margin for m in metrics if m.operating_margin is not None]
-    if len(historical_margins) >= 5:
+    if len(historical_margins) >= 2:
         # Check for stable or improving margins (sign of pricing power)
         avg_margin = sum(historical_margins) / len(historical_margins)
-        recent_margins = historical_margins[:3]  # Last 3 periods
-        older_margins = historical_margins[-3:]  # First 3 periods
+        # Use available periods (may be fewer than 3)
+        mid = max(1, len(historical_margins) // 2)
+        recent_margins = historical_margins[:mid]  # More recent periods
+        older_margins = historical_margins[mid:]   # Older periods
 
         recent_avg = sum(recent_margins) / len(recent_margins)
-        older_avg = sum(older_margins) / len(older_margins)
+        older_avg = sum(older_margins) / len(older_margins) if older_margins else recent_avg
 
         if avg_margin > 0.2 and recent_avg >= older_avg:  # 20%+ margins and stable/improving
             moat_score += 1
@@ -295,7 +297,7 @@ def analyze_moat(metrics: list) -> dict[str, any]:
             reasoning.append(f"Low operating margins (avg: {avg_margin:.1%}) suggest limited pricing power")
 
     # 3. Asset Efficiency and Scale Advantages
-    if len(metrics) >= 5:
+    if len(metrics) >= 2:
         # Check asset turnover trends (revenue efficiency)
         asset_turnovers = []
         for m in metrics:
@@ -308,7 +310,7 @@ def analyze_moat(metrics: list) -> dict[str, any]:
                 reasoning.append("Efficient asset utilization suggests operational moat")
 
     # 4. Competitive Position Strength (inferred from trend stability)
-    if len(historical_roes) >= 5 and len(historical_margins) >= 5:
+    if len(historical_roes) >= 2 and len(historical_margins) >= 2:
         # Calculate coefficient of variation (stability measure)
         roe_avg = sum(historical_roes) / len(historical_roes)
         roe_variance = sum((roe - roe_avg) ** 2 for roe in historical_roes) / len(historical_roes)
@@ -800,10 +802,11 @@ def generate_buffett_output(
                 "Facts:\n{facts}\n\n"
                 "Return exactly:\n"
                 "{{\n"
-                '  "signal": "bullish" | "bearish" | "neutral",\n'
+                '  "signal": "bullish" | "bearish" | "neutral" | "error",\n'
                 '  "confidence": int,\n'
                 '  "reasoning": "short justification"\n'
-                "}}"
+                "}}\n"
+                "Use \"error\" if data is insufficient to make a judgment."
             ),
         ]
     )
@@ -815,7 +818,7 @@ def generate_buffett_output(
 
     # Default fallback uses int confidence to match schema and avoid parse retries
     def create_default_warren_buffett_signal():
-        return WarrenBuffettSignal(signal="neutral", confidence=50, reasoning="Insufficient data")
+        return WarrenBuffettSignal(signal="error", confidence=0, reasoning="Insufficient data")
 
     return call_llm(
         prompt=prompt,

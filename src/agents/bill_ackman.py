@@ -11,7 +11,7 @@ from src.utils.api_key import get_api_key_from_state
 
 
 class BillAckmanSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: float
     reasoning: str
 
@@ -439,7 +439,7 @@ def generate_ackman_output(
 
             Return your output in strictly valid JSON:
             {{
-              "signal": "bullish" | "bearish" | "neutral",
+              "signal": "bullish" | "bearish" | "neutral" | "error",
               "confidence": float (0-100),
               "reasoning": "string"
             }}
@@ -454,7 +454,7 @@ def generate_ackman_output(
 
     def create_default_bill_ackman_signal():
         return BillAckmanSignal(
-            signal="neutral",
+            signal="error",
             confidence=0.0,
             reasoning="Error in analysis, defaulting to neutral"
         )
