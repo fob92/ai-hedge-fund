@@ -1,0 +1,7 @@
+rank,ticker,signal,composite_score,Fundmntls_score,Growth_score,Valuation_score,Buffett_score,Sentiment_score,Fundmntls_signal,Growth_signal,Valuation_signal,Buffett_signal,Sentiment_signal,Fundmntls_confidence,Growth_confidence,Valuation_confidence,Buffett_confidence,Sentiment_confidence
+1,AVGO,neutral,59.9,75.0,32.0,48.0,44.4,100.0,bullish,bearish,neutral,neutral,bullish,50,36,4,11,100
+2,NVDA,neutral,59.7,75.0,42.0,26.0,55.6,100.0,bullish,neutral,bearish,neutral,bullish,50,16,48,11,100
+3,MSFT,neutral,57.6,50.0,35.0,51.0,51.8,100.0,bullish,bearish,neutral,neutral,bullish,0,30,2,4,100
+4,QCOM,neutral,56.5,50.0,41.2,58.0,33.3,100.0,neutral,neutral,neutral,bearish,bullish,0,18,16,33,100
+5,AMD,neutral,51.4,50.0,42.0,28.0,37.0,100.0,neutral,neutral,bearish,neutral,bullish,0,16,44,26,100
+6,AAPL,neutral,50.9,50.0,24.0,36.0,44.4,100.0,bullish,bearish,bearish,neutral,bullish,0,52,28,11,100

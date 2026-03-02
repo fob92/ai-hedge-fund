@@ -1,0 +1,3 @@
+rank,ticker,signal,composite_score,Fundmntls_score,Valuation_score,Fundmntls_signal,Valuation_signal,Fundmntls_confidence,Valuation_confidence
+1,MSFT,neutral,50.5,50.0,51.0,bullish,neutral,0,2
+2,AAPL,neutral,43.0,50.0,36.0,bullish,bearish,0,28

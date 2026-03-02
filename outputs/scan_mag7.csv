@@ -1,0 +1,8 @@
+rank,ticker,signal,composite_score,Fundmntls_score,Valuation_score,Buffett_score,Graham_score,Fundmntls_signal,Valuation_signal,Buffett_signal,Graham_signal,Fundmntls_confidence,Valuation_confidence,Buffett_confidence,Graham_confidence
+1,GOOGL,neutral,57.1,75.0,37.0,63.0,53.3,bullish,bearish,neutral,neutral,50,26,26,7
+2,META,neutral,56.5,75.0,46.0,51.8,53.3,bullish,neutral,neutral,neutral,50,8,4,7
+3,NVDA,neutral,54.1,75.0,26.0,55.6,60.0,bullish,bearish,neutral,neutral,50,48,11,20
+4,MSFT,neutral,49.9,50.0,51.0,51.8,46.7,bullish,neutral,neutral,neutral,0,2,4,7
+5,AAPL,neutral,42.6,50.0,36.0,44.4,40.0,bullish,bearish,neutral,neutral,0,28,11,20
+6,TSLA,bearish,25.5,25.0,8.0,22.2,46.7,bearish,bearish,bearish,neutral,50,84,56,7
+7,AMZN,bearish,24.8,0.0,42.0,37.0,20.0,bearish,neutral,neutral,bearish,100,16,26,60
