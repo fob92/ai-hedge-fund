@@ -54,10 +54,23 @@ load_dotenv()
 
 console = Console()
 
+# Root output directory (mirrors multi_model_analysis convention)
+OUTPUT_ROOT = Path("outputs")
 
-# ────────────────────────────────────────────────────────────────────────────
-# Built-in watchlists (extend as needed)
-# ────────────────────────────────────────────────────────────────────────────
+
+def _build_output_path(end_date: str, tickers: list[str], watchlist: str | None) -> Path:
+    """Build a timestamped output path under outputs/."""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    if watchlist:
+        label = f"wl-{watchlist}"
+    else:
+        label = "-".join(t.lower() for t in tickers[:5])
+        if len(tickers) > 5:
+            label += f"_plus{len(tickers) - 5}"
+    return OUTPUT_ROOT / f"scan_{label}_{timestamp}.csv"
+
+
+
 
 WATCHLISTS: dict[str, list[str]] = {
     "mag7": ["AAPL", "MSFT", "NVDA", "AMZN", "GOOGL", "META", "TSLA"],
@@ -153,7 +166,7 @@ score legend  : >=65% bullish  |  40-65% neutral  |  <=40% bearish
         "--output",
         metavar="FILE.csv",
         default=None,
-        help="Export results to a CSV file.",
+        help="Override the default output path (default: outputs/scan_<label>_<timestamp>.csv).",
     )
     parser.add_argument(
         "--legend",
@@ -301,11 +314,16 @@ def main() -> None:
     if args.legend:
         print_scan_legend(analyst_keys, console=console)
 
-    # ── CSV export ─────────────────────────────────────────────────────────
+    # ── CSV export (always) ────────────────────────────────────────────────
     if args.output:
         out_path = Path(args.output)
-        export_csv(results, analyst_keys, out_path)
-        console.print(f"[green]Exported to {out_path}[/green]\n")
+    else:
+        out_path = _build_output_path(end_date, tickers, args.watchlist)
+
+    OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    export_csv(results, analyst_keys, out_path)
+    console.print(f"[green]Saved to {out_path}[/green]\n")
 
 
 if __name__ == "__main__":
