@@ -1,0 +1,8 @@
+rank,ticker,signal,composite_score,Fundmntls_score,Valuation_score,Graham_score,MBurry_score,Fundmntls_signal,Valuation_signal,Graham_signal,MBurry_signal,Fundmntls_confidence,Valuation_confidence,Graham_confidence,MBurry_confidence
+1,NEM,neutral,48.9,50.0,64.0,40.0,41.7,bullish,bullish,neutral,neutral,0,28,20,17
+2,X,neutral,43.8,25.0,50.0,50.0,50.0,bearish,neutral,neutral,neutral,50,0,0,0
+3,AA,bearish,36.7,25.0,75.0,13.3,33.3,bullish,bullish,bearish,bearish,50,50,73,33
+4,CLF,bearish,31.5,50.0,46.0,13.3,16.7,neutral,neutral,bearish,bearish,0,8,73,67
+5,FCX,bearish,30.1,0.0,42.0,53.3,25.0,bearish,neutral,neutral,bearish,100,16,7,50
+6,VALE,bearish,22.6,0.0,62.0,20.0,8.3,bearish,bullish,bearish,bearish,100,24,60,83
+7,MP,bearish,18.7,0.0,38.0,20.0,16.7,bearish,bearish,bearish,bearish,100,24,60,67

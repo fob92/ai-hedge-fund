@@ -19,7 +19,7 @@ from src.utils.progress import progress
 
 
 class AswathDamodaranSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: float          # 0‒100
     reasoning: str
 
@@ -393,7 +393,7 @@ def generate_damodaran_output(
 
                 Respond EXACTLY in this JSON schema:
                 {{
-                  "signal": "bullish" | "bearish" | "neutral",
+                  "signal": "bullish" | "bearish" | "neutral" | "error",
                   "confidence": float (0-100),
                   "reasoning": "string"
                 }}""",
@@ -405,7 +405,7 @@ def generate_damodaran_output(
 
     def default_signal():
         return AswathDamodaranSignal(
-            signal="neutral",
+            signal="error",
             confidence=0.0,
             reasoning="Parsing error; defaulting to neutral",
         )

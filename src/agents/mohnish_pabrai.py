@@ -11,7 +11,7 @@ from src.utils.api_key import get_api_key_from_state
 
 
 class MohnishPabraiSignal(BaseModel):
-    signal: Literal["bullish", "bearish", "neutral"]
+    signal: Literal["bullish", "bearish", "neutral", "error"]
     confidence: float
     reasoning: str
 
@@ -335,7 +335,7 @@ def generate_pabrai_output(
 
           Return EXACTLY this JSON:
           {{
-            "signal": "bullish" | "bearish" | "neutral",
+            "signal": "bullish" | "bearish" | "neutral" | "error",
             "confidence": float (0-100),
             "reasoning": "string with Pabrai-style analysis focusing on downside protection, FCF yield, and doubling potential"
           }}
@@ -349,7 +349,7 @@ def generate_pabrai_output(
     })
 
     def create_default_pabrai_signal():
-        return MohnishPabraiSignal(signal="neutral", confidence=0.0, reasoning="Error in analysis, defaulting to neutral")
+        return MohnishPabraiSignal(signal="error", confidence=0.0, reasoning="Error in analysis, defaulting to neutral")
 
     return call_llm(
         prompt=prompt,

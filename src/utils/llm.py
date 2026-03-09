@@ -97,9 +97,10 @@ def create_default_response(model_class: type[BaseModel]) -> BaseModel:
         elif hasattr(field.annotation, "__origin__") and field.annotation.__origin__ == dict:
             default_values[field_name] = {}
         else:
-            # For other types (like Literal), try to use the first allowed value
+            # For other types (like Literal), try to use 'error' if available, else first allowed value
             if hasattr(field.annotation, "__args__"):
-                default_values[field_name] = field.annotation.__args__[0]
+                args = field.annotation.__args__
+                default_values[field_name] = "error" if "error" in args else args[0]
             else:
                 default_values[field_name] = None
 
